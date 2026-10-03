@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Macro Practice Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F8FB; --grid:#E1E8F1; --ink:#1B2B4B; --muted:#5A6A86;
+  --demand:#2F6FDB; --supply:#D9661A; --good:#23845A; --bad:#C2363F;
+  --card:#FFFFFF; --line:#C9D4E3; --good-bg:#E6F4EC; --bad-bg:#FBEBEC;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111827; --grid:#1C2536; --ink:#E6ECF5; --muted:#9AA8BF;
+    --demand:#6EA0F5; --supply:#F0934D; --good:#4CC38A; --bad:#F07178;
+    --card:#18213A; --line:#2D3A55; --good-bg:#15332A; --bad-bg:#3A1C22;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111827; --grid:#1C2536; --ink:#E6ECF5; --muted:#9AA8BF;
+  --demand:#6EA0F5; --supply:#F0934D; --good:#4CC38A; --bad:#F07178;
+  --card:#18213A; --line:#2D3A55; --good-bg:#15332A; --bad-bg:#3A1C22;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:1.0625rem; line-height:1.55; min-height:100vh;
+}
+main{max-width:40rem; margin:0 auto; padding:1.5rem 1.1rem 4rem}
+h1,h2,.display{font-family:"Bricolage Grotesque", "Atkinson Hyperlegible", system-ui, sans-serif; font-weight:700; letter-spacing:-0.01em; margin:0}
+h1{font-size:clamp(1.9rem,6vw,2.6rem); line-height:1.05}
+h2{font-size:1.35rem; line-height:1.2}
+p{margin:0}
+button{font:inherit; color:inherit; cursor:pointer}
+button:focus-visible,.chip:focus-within{outline:3px solid var(--demand); outline-offset:2px}
+
+/* hero graph */
+.hero{display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:end; margin-bottom:1.75rem}
+.hero p{color:var(--muted); margin-top:.5rem}
+.graph{width:120px; height:110px}
+.graph .axis{stroke:var(--ink); stroke-width:2; fill:none}
+.graph .d{stroke:var(--demand); stroke-width:3; fill:none; stroke-linecap:round}
+.graph .s{stroke:var(--supply); stroke-width:3; fill:none; stroke-linecap:round}
+.graph .eq{fill:var(--ink)}
+.graph text{font:700 11px "Atkinson Hyperlegible",sans-serif; fill:var(--muted)}
+
+.panel{background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:1.25rem}
+.stack>*+*{margin-top:1rem}
+.row{display:flex; gap:.6rem; flex-wrap:wrap}
+
+.btn{border:2px solid var(--ink); background:var(--ink); color:var(--paper); border-radius:10px; padding:.7rem 1.1rem; font-weight:700}
+.btn.ghost{background:transparent; color:var(--ink)}
+.btn:disabled{opacity:.4; cursor:not-allowed}
+.btn.small{padding:.4rem .75rem; font-size:.9rem}
+
+.chips{display:flex; flex-wrap:wrap; gap:.5rem}
+.chip{position:relative}
+.chip input{position:absolute; opacity:0; inset:0; cursor:pointer}
+.chip span{display:block; border:1.5px solid var(--line); border-radius:999px; padding:.35rem .85rem; font-size:.95rem; background:var(--paper)}
+.chip input:checked + span{background:var(--demand); border-color:var(--demand); color:#fff}
+.hint{color:var(--muted); font-size:.92rem}
+
+/* question */
+.topbar{display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:.75rem}
+.meter{height:6px; background:var(--grid); border-radius:3px; overflow:hidden; margin-bottom:1.25rem}
+.meter i{display:block; height:100%; background:var(--demand); width:0; transition:width .25s}
+.tag{font-size:.9rem; color:var(--muted)}
+.tag b{color:var(--supply)}
+.qtext{font-size:1.2rem; font-weight:700; line-height:1.4; margin-bottom:1rem}
+.opts{display:grid; gap:.6rem}
+.opt{display:flex; gap:.75rem; align-items:flex-start; text-align:left; width:100%;
+  background:var(--card); border:1.5px solid var(--line); border-radius:10px; padding:.75rem .9rem}
+.opt .k{flex:none; width:1.6rem; height:1.6rem; border-radius:50%; border:1.5px solid var(--line);
+  display:grid; place-items:center; font-weight:700; font-size:.85rem}
+.opt:hover:not(:disabled){border-color:var(--demand)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--good); background:var(--good-bg)}
+.opt.right .k{background:var(--good); border-color:var(--good); color:#fff}
+.opt.wrong{border-color:var(--bad); background:var(--bad-bg)}
+.opt.wrong .k{background:var(--bad); border-color:var(--bad); color:#fff}
+.opt.dim{opacity:.55}
+.feedback{margin-top:1rem; border-left:4px solid var(--good); padding:.6rem .9rem; background:var(--good-bg); border-radius:0 8px 8px 0}
+.feedback.no{border-color:var(--bad); background:var(--bad-bg)}
+.feedback strong{display:block; margin-bottom:.2rem}
+.retry-note{color:var(--muted); font-size:.9rem; margin-top:.5rem}
+.next{margin-top:1rem; width:100%}
+
+/* results */
+.score{font-family:"Bricolage Grotesque",sans-serif; font-weight:700; font-size:3.5rem; line-height:1}
+.bars{display:grid; gap:.55rem}
+.bar{display:grid; grid-template-columns:3.2rem 1fr 3.4rem; gap:.6rem; align-items:center; font-size:.95rem}
+.bar .track{height:10px; background:var(--grid); border-radius:5px; overflow:hidden}
+.bar .fill{height:100%; background:var(--good)}
+.bar.low .fill{background:var(--supply)}
+.bar .n{text-align:right; color:var(--muted)}
+.hidden{display:none !important}
+@media (prefers-reduced-motion: reduce){ .meter i{transition:none} }
+</style>
+</head>
+<body>
+<main>
+  <!-- HOME -->
+  <section id="home">
+    <div class="hero">
+      <div>
+        <h1>Macro practice quiz</h1>
+        <p>Gwartney 18e, chapters 1, 2 and 5–10. Missed questions come back until you get them right.</p>
+      </div>
+      <svg class="graph" viewBox="0 0 120 110" aria-hidden="true">
+        <path class="axis" d="M12 4 V98 H116"/>
+        <path class="d" d="M20 16 L104 90"/>
+        <path class="s" d="M20 90 L104 16"/>
+        <circle class="eq" cx="62" cy="53" r="5"/>
+        <text x="106" y="96">Q</text><text x="2" y="12">P</text>
+      </svg>
+    </div>
+
+    <div class="stack">
+      <div class="panel stack">
+        <h2>Pick chapters</h2>
+        <div class="chips" id="chips"></div>
+        <div class="row">
+          <button class="btn small ghost" id="selAll">Select all</button>
+          <button class="btn small ghost" id="selNone">Clear</button>
+        </div>
+        <p class="hint" id="count"></p>
+        <button class="btn" id="start">Start quiz</button>
+      </div>
+
+      <div class="panel stack">
+        <h2>Weak spots</h2>
+        <p class="hint" id="weakText"></p>
+        <div class="row">
+          <button class="btn" id="startWeak">Practice weak spots</button>
+          <button class="btn ghost" id="clearWeak">Clear weak spots</button>
+        </div>
+      </div>
+      <p class="hint">Keyboard: press 1–4 or A–D to answer, Enter for the next question.</p>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz" class="hidden">
+    <div class="topbar">
+      <span class="tag" id="tag"></span>
+      <button class="btn small ghost" id="quit">End quiz</button>
+    </div>
+    <div class="meter"><i id="meter"></i></div>
+    <div class="panel">
+      <p class="qtext" id="qtext"></p>
+      <div class="opts" id="opts"></div>
+      <div id="fb" class="feedback hidden" role="status" aria-live="polite"></div>
+      <button class="btn next hidden" id="next">Next question</button>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden stack">
+    <h1>Round finished</h1>
+    <div class="panel stack">
+      <div><span class="score" id="score"></span></div>
+      <p class="hint" id="scoreNote"></p>
+      <div class="bars" id="bars"></div>
+    </div>
+    <div class="row">
+      <button class="btn" id="again">Back to start</button>
+      <button class="btn ghost" id="weakAfter">Practice weak spots</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const DATA = {"qs": [{"id": 0, "ch": 1, "q": "What is the opportunity cost of a choice?", "opts": ["The highest valued alternative that is sacrificed", "The total dollar price paid for the option", "The sum of all alternatives given up", "The cost of acquiring information about the option"], "exp": "Opportunity cost is the single highest-valued alternative you give up, not the sum of all alternatives. It's subjective and varies across people."}, {"id": 1, "ch": 1, "q": "Which statement is NORMATIVE?", "opts": ["The inflation rate should be lower.", "The inflation rate rises when the money supply is increased.", "The earth is made of marshmallows.", "If gas prices rise, people will buy less gas."], "exp": "Normative = 'what ought to be' (should/ought), can't be proven true or false. Positive statements are testable even if false, like the marshmallow one."}, {"id": 2, "ch": 1, "q": "Assuming that what is true for an individual must also be true for the whole group is called:", "opts": ["The fallacy of composition", "Violation of ceteris paribus", "Association is not causation", "The secondary effects pitfall"], "exp": "Fallacy of composition. Watch for it when moving from micro (individuals/firms) to macro (the whole economy)."}, {"id": 3, "ch": 1, "q": "'Ceteris paribus' means:", "opts": ["Other things held constant", "At the margin", "Buyer beware", "Value is subjective"], "exp": "Ceteris paribus = other things constant. Failing to hold other things constant can lead to wrong conclusions about cause and effect."}, {"id": 4, "ch": 1, "q": "When price is used to ration a good, who gets it?", "opts": ["Those willing and able to give up other things (pay the price)", "Those who arrive first", "Those with the most political influence", "Those who need it most"], "exp": "Price rationing allocates to those willing to give up other things, and it creates an incentive to earn income. First-come-first-served rewards waiting; government rationing rewards political status."}, {"id": 5, "ch": 1, "q": "Economists say the test of a theory is:", "opts": ["Its ability to predict", "Whether experts agree with it", "Whether its assumptions are realistic", "Whether it is supported by good intentions"], "exp": "Principle 8: the test of a theory is its ability to predict real-world outcomes."}, {"id": 6, "ch": 2, "q": "A point INSIDE the production possibilities curve represents:", "opts": ["An inefficient use of resources", "An unattainable combination of output", "Full and efficient use of resources", "Economic growth"], "exp": "Inside = inefficient; you could get more of one good without giving up any of the other. On the curve = efficient. Outside = unattainable with current resources."}, {"id": 7, "ch": 2, "q": "Which of these would NOT shift the PPC outward?", "opts": ["Moving resources from producing food to producing clothing", "An advancement in technology", "An increase in the economy's resource base", "Improvements in the rules under which the economy functions"], "exp": "Reallocating resources moves you ALONG the curve. The four outward shifters: more resources, better technology, improved rules/institutions, and working harder (giving up leisure)."}, {"id": 8, "ch": 2, "q": "The law of comparative advantage says joint output is greatest when each good is produced by:", "opts": ["The low opportunity cost producer", "The producer who can make the most of it in absolute terms", "The producer with the most resources", "Whoever values the good most"], "exp": "Comparative advantage is about LOWER OPPORTUNITY COST, not absolute ability. It applies to individuals, firms, regions, and nations."}, {"id": 9, "ch": 2, "q": "An economy that chooses more investment goods and fewer consumption goods today will likely:", "opts": ["See its PPC shift outward more in the future", "See its PPC shift inward in the future", "Move to a point inside its PPC", "Have no change in future production possibilities"], "exp": "Investing now (buildings, equipment, training) means greater future output, so the PPC shifts farther out compared with a high-consumption choice."}, {"id": 10, "ch": 2, "q": "Middlemen (like your local grocer) are valuable mainly because they:", "opts": ["Reduce transaction costs", "Increase the price of goods", "Create property rights", "Eliminate opportunity costs"], "exp": "Middlemen reduce the time, effort, and resources needed to search out, negotiate, and complete an exchange (transaction costs)."}, {"id": 11, "ch": 2, "q": "Which is NOT one of the three parts of private property rights?", "opts": ["The right to have the government set the property's price", "The right to exclusive use", "Legal protection against invaders", "The right to transfer it to another"], "exp": "Private property rights = exclusive use, legal protection against invasion, and the right to transfer (sell, rent, lease, etc.)."}, {"id": 12, "ch": 2, "q": "When a voluntary exchange occurs:", "opts": ["Both parties expect to be made better off", "One party gains exactly what the other loses", "Value is only transferred, not created", "The good's objective value stays fixed"], "exp": "Mutual gain is the foundation of trade. Moving goods to people who value them more creates value."}, {"id": 13, "ch": 5, "q": "The economically efficient level of an activity is where:", "opts": ["Marginal benefit equals marginal cost", "Marginal benefit is at its maximum", "Total cost is minimized", "Marginal cost is zero"], "exp": "Expand an activity as long as MB > MC; stop where MB = MC (Q2 on the graph). Below that you skip worthwhile units; beyond it MC > MB."}, {"id": 14, "ch": 5, "q": "When external COSTS (negative externality) are present, the market will produce:", "opts": ["Too many units at too low a price", "Too few units at too high a price", "Too few units at too low a price", "The efficient quantity"], "exp": "The supply curve understates the true cost, so output is too high and price too low. Including all costs shifts supply left (S2): lower Q, higher P."}, {"id": 15, "ch": 5, "q": "When external BENEFITS (positive externality) are present, the market will usually produce:", "opts": ["Too few units", "Too many units", "The efficient quantity", "Nothing at all"], "exp": "The demand curve understates the total value, so units worth more than they cost may not get produced. Counting all benefits shifts demand right."}, {"id": 16, "ch": 5, "q": "The two defining characteristics of a public good are:", "opts": ["Nonrival in consumption and nonexcludable", "Produced by government and free of charge", "Rival in consumption and excludable", "Low cost and high demand"], "exp": "It's the good's characteristics, not who produces it. Examples: national defense, broadcast signals, mosquito abatement."}, {"id": 17, "ch": 5, "q": "A person who receives the benefits of a good without helping pay for it is a:", "opts": ["Free rider", "Rent seeker", "Middleman", "Crony capitalist"], "exp": "Because nonpayers can't be excluded from public goods, people have an incentive to free ride, so too little of the good gets produced."}, {"id": 18, "ch": 5, "q": "Which is NOT one of the four reasons the invisible hand (markets) may fail?", "opts": ["The special interest effect", "Lack of competition", "Externalities", "Poor information"], "exp": "Market failure: lack of competition, externalities, public goods, poor information. The special interest effect is a source of GOVERNMENT failure (Ch. 6)."}, {"id": 19, "ch": 5, "q": "When competition is absent, sellers tend to:", "opts": ["Restrict output and raise prices", "Expand output and lower prices", "Produce the efficient quantity", "Create external benefits"], "exp": "Restricted supply (S2) gives Q2 < Q1 and P2 > P1: too few units at too high a price."}, {"id": 20, "ch": 5, "q": "Protecting people and property and enforcing contracts is government's:", "opts": ["Protective function", "Productive function", "Redistributive function", "Regulatory function"], "exp": "Protective = security, rules, contract enforcement. Productive = providing goods hard to supply through markets (and a stable monetary environment)."}, {"id": 21, "ch": 6, "q": "Voters having little incentive to become informed because their single vote is unlikely to be decisive is the:", "opts": ["Rational ignorance effect", "Shortsightedness effect", "Special interest effect", "Bundle purchase problem"], "exp": "Rational ignorance: getting informed is costly and one vote rarely changes the outcome, so many voters stay uninformed on many issues."}, {"id": 22, "ch": 6, "q": "Representative government is biased toward adopting INEFFICIENT projects when:", "opts": ["Benefits are concentrated and costs are widespread", "Benefits and costs are both widespread", "Benefits are widespread and costs are concentrated", "Benefits and costs are both concentrated"], "exp": "Type 2: concentrated benefits + widespread costs = special interest effect. (Type 4, widespread benefits + concentrated costs, tends to REJECT productive projects.)"}, {"id": 23, "ch": 6, "q": "Road project: benefits are Adams $20, Chan $12, Green $4, Lee $2, Diaz $2 (total $40). Under Plan A everyone pays $5 tax. What happens in a majority vote?", "opts": ["It fails 3 to 2, even though it's efficient", "It passes 3 to 2", "It passes unanimously", "It fails unanimously because it's inefficient"], "exp": "Only Adams and Chan gain more than $5. Green, Lee, Diaz vote no, so it fails 3-2 even though total benefits ($40) exceed costs ($25). Under Plan B (taxes proportional to benefits) it passes unanimously."}, {"id": 24, "ch": 6, "q": "Politicians exchanging support on one issue for support on another is called:", "opts": ["Logrolling", "Pork-barrel legislation", "Rent seeking", "Crony capitalism"], "exp": "Logrolling = vote trading. Pork-barrel legislation = bundling many local spending projects into one bill."}, {"id": 25, "ch": 6, "q": "Why do politicians find debt financing attractive, according to public choice analysis?", "opts": ["The shortsightedness effect: current benefits now, hard-to-see costs later", "The rational ignorance effect makes debt free", "Debt-financed projects are always efficient", "Bureaucrats prefer smaller budgets"], "exp": "Shortsightedness effect: bias toward clearly defined current benefits with future costs that are hard to identify."}, {"id": 26, "ch": 6, "q": "Actions by groups trying to use the political process to redistribute income to themselves are called:", "opts": ["Rent (favor) seeking", "Entrepreneurship", "Logrolling", "Comparative advantage"], "exp": "Rent seeking diverts resources from productive activity, so output falls below potential."}, {"id": 27, "ch": 6, "q": "The 'bootleggers and Baptists' strategy refers to:", "opts": ["Self-interested action packaged as moral behavior", "Voters trading votes across districts", "Bureaucrats seeking larger budgets", "Markets failing to provide public goods"], "exp": "Rent seekers frame favors as child safety, saving family farms, etc. Example: Mattel and the 2008 Consumer Product Safety Improvement Act."}, {"id": 28, "ch": 6, "q": "The U.S. sugar program (concentrated gains for ~20,000 growers, ~$25 cost per household) illustrates:", "opts": ["The special interest effect", "The rational ignorance effect only", "A public good", "An efficient government program"], "exp": "Large personal benefit for a few + small individual cost spread over many = special interest effect. The program persists even though it's counterproductive."}, {"id": 29, "ch": 6, "q": "Which is a source of GOVERNMENT failure?", "opts": ["Weak incentives for operational efficiency", "Externalities", "Public goods", "Lack of competition among sellers"], "exp": "Government failure: special interest effect, shortsightedness effect, rent seeking, weak incentives for operational efficiency (no profit motive, no bankruptcy)."}, {"id": 30, "ch": 7, "q": "Why are intermediate goods NOT counted in GDP?", "opts": ["It would double count their value", "They are not produced domestically", "They are not sold for money", "They are counted in net exports instead"], "exp": "Only final goods and services count; the value of intermediate goods is already embodied in the final good."}, {"id": 31, "ch": 7, "q": "Which is NOT a component of GDP under the EXPENDITURE approach?", "opts": ["Employee compensation", "Personal consumption", "Gross private investment", "Net exports"], "exp": "Expenditure approach: C + I + G + NX. Employee compensation is part of the resource cost-income approach (with self-employment income, rents, interest, profits)."}, {"id": 32, "ch": 7, "q": "Nominal GDP is $27,361 billion and the GDP deflator is 122.3 (base year = 100). Real GDP in base-year dollars is about:", "opts": ["$22,372 billion", "$33,463 billion", "$27,361 billion", "$24,950 billion"], "exp": "Real GDP = Nominal GDP / (Deflator / 100) = 27,361 / 1.223 = about 22,372. (The 2023 figure in 2017 dollars from your slides.)"}, {"id": 33, "ch": 7, "q": "How does the GDP deflator differ from the CPI?", "opts": ["The GDP deflator covers all goods in GDP; the CPI covers only what households buy", "The CPI is broader than the GDP deflator", "The GDP deflator only measures imported goods", "They use the exact same market basket"], "exp": "The GDP deflator is broader. It and the chained CPI also adjust for substitution away from goods that got relatively more expensive."}, {"id": 34, "ch": 7, "q": "Which of these is NOT counted in GDP?", "opts": ["A homemaker cooking meals for their own family", "A family paying for a streaming subscription", "A firm buying new machinery", "The government building a highway"], "exp": "Household (nonmarket) production isn't counted because there's no market transaction. Other GDP shortcomings: underground economy, leisure, quality changes, 'bads'."}, {"id": 35, "ch": 7, "q": "A hurricane destroys homes and infrastructure, then rebuilding begins. How is GDP affected?", "opts": ["Damages are not subtracted, but recovery spending is added", "Damages are subtracted and recovery spending is added", "Neither is counted", "Damages are subtracted and recovery spending is ignored"], "exp": "GDP tracks production, not destruction, so GDP can rise after a disaster. That's one reason GDP isn't a perfect welfare measure."}, {"id": 36, "ch": 7, "q": "Between 2017 and 2023, nominal GDP rose 39.5%, but real GDP rose only 14.1%. Why?", "opts": ["Prices rose about 22% over the period", "Population fell", "Net exports were negative", "Intermediate goods were excluded"], "exp": "Nominal growth mixes higher output with higher prices. Deflating removes the price increase (deflator went 100 to 122.3)."}, {"id": 37, "ch": 8, "q": "Population age 16+ = 250M, employed = 152M, unemployed = 8M. What is the UNEMPLOYMENT rate?", "opts": ["5.0%", "3.2%", "5.3%", "64%"], "exp": "Unemployment rate = unemployed / labor force. Labor force = 152 + 8 = 160M, so 8/160 = 5%. (Dividing by population is a common trap.)"}, {"id": 38, "ch": 8, "q": "Same economy: population 16+ = 250M, employed = 152M, unemployed = 8M. What is the LABOR FORCE PARTICIPATION rate?", "opts": ["64%", "60.8%", "95%", "5%"], "exp": "LFPR = labor force / population 16+ = 160 / 250 = 64%. (152/250 = 60.8% is the employment-population ratio.)"}, {"id": 39, "ch": 8, "q": "A person working part-time who is diligently searching for a full-time job is classified as:", "opts": ["Employed", "Unemployed", "Not in the labor force", "Cyclically unemployed"], "exp": "Working at least 1 hour for pay counts as employed, even if they want more hours."}, {"id": 40, "ch": 8, "q": "A full-time college student who isn't working or looking for work is:", "opts": ["Not in the labor force", "Unemployed", "Employed", "Frictionally unemployed"], "exp": "Not working and not seeking work = not in the labor force (same for retirees and homemakers)."}, {"id": 41, "ch": 8, "q": "An auto worker on temporary layoff who expects to be recalled is classified as:", "opts": ["Unemployed", "Employed", "Not in the labor force", "Discouraged worker"], "exp": "People on layoff waiting to return to a previous job count as unemployed."}, {"id": 42, "ch": 8, "q": "Frictional unemployment is caused by:", "opts": ["Imperfect information as workers and employers search for good matches", "Workers' skills not matching available jobs", "A recession reducing demand for labor", "Not enough jobs for everyone"], "exp": "Frictional = job search under imperfect information. Structural = skill mismatch from changing products/technology. Cyclical = business cycle downturns."}, {"id": 43, "ch": 8, "q": "New technology makes certain skills obsolete, and job openings require skills the unemployed don't have. This is:", "opts": ["Structural unemployment", "Frictional unemployment", "Cyclical unemployment", "Seasonal employment"], "exp": "Structural unemployment comes from structural changes in the economy that create a skills mismatch."}, {"id": 44, "ch": 8, "q": "At full employment:", "opts": ["Only frictional and structural unemployment remain (no cyclical)", "The unemployment rate is zero", "Cyclical unemployment is at its peak", "Actual GDP is below potential GDP"], "exp": "Full employment = natural rate of unemployment, not zero. Actual output equals potential output."}, {"id": 45, "ch": 8, "q": "During a recession, which is true?", "opts": ["Actual GDP is below potential GDP", "Actual unemployment is below the natural rate", "Employment exceeds full employment", "Cyclical unemployment is zero"], "exp": "In a recession, actual unemployment rises above the natural rate and actual GDP falls below potential."}, {"id": 46, "ch": 8, "q": "The CPI was 150 at the end of last year and 157.5 at the end of this year. The inflation rate was:", "opts": ["5%", "7.5%", "4.8%", "57.5%"], "exp": "Inflation = (157.5 - 150) / 150 x 100 = 7.5 / 150 = 5%."}, {"id": 47, "ch": 8, "q": "People expected 3% inflation, but prices rose 7%. This is:", "opts": ["Inflation higher than anticipated (unanticipated inflation)", "Anticipated inflation", "Inflation lower than anticipated", "Deflation"], "exp": "Actual exceeded expected, so 4 points of it was a surprise. Unanticipated inflation is what disrupts long-term contracts."}, {"id": 48, "ch": 8, "q": "The four phases of the business cycle, in order starting from the top, are:", "opts": ["Peak, contraction, recessionary trough, expansion", "Expansion, peak, trough, contraction", "Peak, trough, contraction, expansion", "Contraction, peak, expansion, trough"], "exp": "Peak (boom) then contraction then recessionary trough (bottom) then expansion. A depression is a prolonged, very severe recession."}, {"id": 49, "ch": 8, "q": "Which is NOT a reason high and variable inflation harms the economy?", "opts": ["It makes long-term contracts easier to plan", "It distorts the information delivered by prices", "It reduces investment by increasing risk", "People spend more time protecting wealth instead of producing"], "exp": "High, variable inflation makes long-term planning HARDER. It's hard to predict, which is exactly the problem."}, {"id": 50, "ch": 9, "q": "Which is NOT a reason the aggregate demand curve slopes downward?", "opts": ["A higher price level improves firms' profit margins", "A lower price level increases the purchasing power of money", "A lower price level lowers interest rates, boosting spending", "A lower price level makes domestic goods cheaper relative to foreign goods"], "exp": "The profit-margin story explains why SRAS slopes UP. AD slopes down due to the wealth effect, the interest rate effect, and the international substitution effect."}, {"id": 51, "ch": 9, "q": "Why is the long-run aggregate supply (LRAS) curve vertical?", "opts": ["A higher price level doesn't change resources, technology, or institutions", "Firms can't change output in the long run", "Prices are fixed by contracts in the long run", "Aggregate demand is constant in the long run"], "exp": "Full-employment output (YF) depends on resources, technology, and institutions, which the price level doesn't change. So output can't be sustainably expanded by higher prices."}, {"id": 52, "ch": 9, "q": "Why does the SRAS curve slope upward?", "opts": ["Some costs are fixed by contracts, so an unexpected price rise boosts profits", "Higher prices increase the economy's resource base", "Consumers buy more when prices rise", "Interest rates fall when prices rise"], "exp": "In the short run, wages, interest rates, etc. are locked in by prior contracts, so an unanticipated higher price level widens profit margins and firms expand output."}, {"id": 53, "ch": 9, "q": "The money interest rate is 11% and expected inflation is 5%. The real interest rate is:", "opts": ["6%", "16%", "11%", "2.2%"], "exp": "Real interest rate = money interest rate - inflationary premium = 11% - 5% = 6%."}, {"id": 54, "ch": 9, "q": "If actual inflation turns out HIGHER than anticipated:", "opts": ["Borrowers gain at the expense of lenders", "Lenders gain at the expense of borrowers", "Neither gains, since the interest rate adjusts", "Both gain equally"], "exp": "Borrowers repay with dollars worth less than expected. If inflation is LOWER than anticipated, lenders gain. Correctly anticipated inflation favors neither."}, {"id": 55, "ch": 9, "q": "When overall interest rates rise, prices of previously issued bonds:", "opts": ["Fall", "Rise", "Stay the same", "Become zero"], "exp": "Old bonds pay a fixed rate. When new bonds pay more, the old ones are less attractive, so their price falls. Inverse relationship."}, {"id": 56, "ch": 9, "q": "With a market-determined exchange rate, a trade deficit is closely linked with:", "opts": ["A net inflow of capital", "A net outflow of capital", "A budget surplus", "A trade surplus"], "exp": "Imports - Exports = Capital inflow - Capital outflow. A trade deficit (imports > exports) is matched by net capital inflow."}, {"id": 57, "ch": 9, "q": "When the economy is in long-run equilibrium:", "opts": ["Actual unemployment equals the natural rate AND the actual price level equals the anticipated one", "Unemployment is zero", "Actual GDP exceeds potential GDP", "Cyclical unemployment is high"], "exp": "Long-run equilibrium: AD, SRAS, and LRAS intersect; output = potential (YF); full employment; expectations about the price level turned out correct."}, {"id": 58, "ch": 9, "q": "An unanticipated increase in the price level will, in the short run:", "opts": ["Expand output and employment", "Reduce output and employment", "Have no effect on output", "Permanently increase potential GDP"], "exp": "Real wages and other contracted costs lag, so profits rise and firms expand. In the long run, costs catch up and output returns to potential."}, {"id": 59, "ch": 9, "q": "Using government taxation and spending to achieve macroeconomic goals is:", "opts": ["Fiscal policy", "Monetary policy", "Trade policy", "Rent seeking"], "exp": "Fiscal = taxes and spending. Monetary = control of the money supply and credit conditions."}, {"id": 60, "ch": 9, "q": "Which market coordinates the actions of borrowers and lenders, with the interest rate as its price?", "opts": ["Loanable funds market", "Resource market", "Foreign exchange market", "Goods and services market"], "exp": "The four key markets: goods & services, resource, loanable funds, foreign exchange."}, {"id": 61, "ch": 9, "q": "Are trade deficits necessarily bad?", "opts": ["It depends on whether the borrowed funds go to productive investment", "Yes, always", "No, never", "Only when the exchange rate is fixed"], "exp": "A trade deficit reflects capital inflow (borrowing from foreigners). Productive investment raises future income; funding consumption or unproductive uses lowers it."}, {"id": 62, "ch": 10, "q": "Which of these would shift aggregate demand to the RIGHT?", "opts": ["A stock market boom that increases real wealth", "An increase in the real interest rate", "Growing pessimism among consumers and businesses", "An increase in the exchange rate value of the nation's currency"], "exp": "AD shifts right with: more real wealth, lower real interest rates, optimism, higher expected inflation, higher incomes abroad, and a LOWER exchange rate value of the currency."}, {"id": 63, "ch": 10, "q": "A decline in the exchange rate value of the dollar will tend to:", "opts": ["Increase AD, because U.S. goods become cheaper to foreigners", "Decrease AD, because imports become cheaper", "Shift LRAS to the right", "Have no effect on AD"], "exp": "A weaker dollar makes U.S. exports cheaper and imports pricier, so net exports and AD rise."}, {"id": 64, "ch": 10, "q": "Which would shift BOTH LRAS and SRAS to the right?", "opts": ["An improvement in technology", "A temporary spell of favorable weather", "A temporary drop in resource prices", "A reduction in expected inflation"], "exp": "LRAS shifters (resources, technology/productivity, institutions) move SRAS in the same direction too. Weather, temporary resource price changes, and expected inflation shift only SRAS."}, {"id": 65, "ch": 10, "q": "A drought that temporarily reduces crop output would:", "opts": ["Shift SRAS left but leave LRAS unchanged", "Shift both LRAS and SRAS left", "Shift AD left", "Shift LRAS left only"], "exp": "Temporary changes in productive capability shift SRAS only. The long-run capacity of the economy isn't altered."}, {"id": 66, "ch": 10, "q": "Steady, predictable growth from capital formation and better technology will:", "opts": ["Shift LRAS right without disrupting macro equilibrium", "Cause a recession", "Cause an unsustainable boom", "Shift only SRAS"], "exp": "Anticipated changes let decision makers adjust ahead of time, so equilibrium isn't disrupted. Full-employment output rises from YF1 to YF2."}, {"id": 67, "ch": 10, "q": "In the SHORT run, an unanticipated increase in AD causes:", "opts": ["A higher price level and output above long-run potential", "A lower price level and lower output", "A higher price level with no change in output", "Unemployment above the natural rate"], "exp": "Profit margins temporarily improve, output exceeds potential, and unemployment falls BELOW the natural rate (e.g., P105 and Y2 on the slide)."}, {"id": 68, "ch": 10, "q": "In the LONG run, after an unanticipated increase in AD:", "opts": ["Resource prices rise, SRAS shifts left, and output returns to potential at a higher price level", "Output stays permanently above potential", "Resource prices fall and SRAS shifts right", "LRAS shifts right to match the new AD"], "exp": "Contracts get renegotiated, costs rise, SRAS shifts left, and you end at full-employment output with a higher price level (P110). The demand boost only expanded output temporarily."}, {"id": 69, "ch": 10, "q": "After an unanticipated DECREASE in AD, what eventually returns the economy to long-run equilibrium?", "opts": ["Lower resource prices and lower real interest rates", "Higher resource prices and higher real interest rates", "A permanent leftward shift of LRAS", "Nothing; the economy stays in recession permanently"], "exp": "Weak demand lowers resource prices (SRAS shifts right) and real interest rates fall, stimulating AD. Output returns to potential at a lower price level (P90), but it can be a lengthy, painful process."}, {"id": 70, "ch": 10, "q": "An unexpected event that temporarily increases or decreases aggregate supply is a:", "opts": ["Supply shock", "Demand shock", "Fiscal policy", "Shift in LRAS"], "exp": "Supply shocks catch people by surprise. Examples of negative ones: the 2022 Russia-Ukraine war's effect on wheat and energy, Hurricane Katrina."}, {"id": 71, "ch": 10, "q": "A sharp, unexpected rise in the world price of oil will, in the short run:", "opts": ["Shift SRAS left, raising the price level and lowering output", "Shift SRAS right, lowering the price level and raising output", "Shift AD right, raising both price level and output", "Have no effect until LRAS shifts"], "exp": "Higher resource costs shift SRAS left: price level up (P110), output down (Y2). If the shock is permanent, LRAS shifts left too; if temporary, SRAS eventually moves back."}, {"id": 72, "ch": 10, "q": "A temporary bumper crop from good weather would cause:", "opts": ["A lower price level and higher current GDP, with LRAS unchanged", "A higher price level and lower GDP", "A permanent rightward shift in LRAS", "A leftward shift in AD"], "exp": "Favorable, temporary supply shock: SRAS shifts right, price level falls (P95), output rises to Y2. Because it can't be counted on, LRAS stays put."}, {"id": 73, "ch": 10, "q": "If the actual rate of inflation is LESS than anticipated, firms will tend to:", "opts": ["Incur losses and reduce output", "Earn higher profits and expand output", "Leave output unchanged", "Shift LRAS to the right"], "exp": "Lower-than-expected inflation acts like a fall in the price level relative to locked-in costs. Higher-than-expected inflation does the opposite and boosts output."}, {"id": 74, "ch": 10, "q": "According to the AD-AS model, the two causes of recessions are:", "opts": ["Unanticipated reductions in AD and unfavorable supply shocks", "Anticipated increases in AD and favorable supply shocks", "Steady growth in LRAS and lower interest rates", "Higher wealth and consumer optimism"], "exp": "Recession = product prices low relative to costs. Booms come from unanticipated increases in AD and favorable supply shocks."}, {"id": 75, "ch": 10, "q": "During a recession, real interest rates tend to:", "opts": ["Fall, which stimulates AD and helps the economy recover", "Rise, which deepens the recession", "Stay constant", "Rise, which stimulates investment"], "exp": "The two self-correcting forces: real resource prices and real interest rates. In a recession both fall; in a boom both rise and slow the economy."}, {"id": 76, "ch": 10, "q": "What caused the 2008-2009 Great Recession in AD-AS terms?", "opts": ["Falling housing and stock prices reduced AD, and soaring oil prices reduced SRAS", "Rising housing prices increased AD", "A permanent improvement in technology shifted LRAS", "Falling oil prices increased SRAS"], "exp": "Housing prices fell after mid-2006 and stocks plunged in 2008 (less wealth, lower AD), energy prices surged in 2007-08 (lower SRAS), and confidence collapsed (AD fell further)."}, {"id": 77, "ch": 10, "q": "Which would be MOST likely to throw the U.S. economy into a recession?", "opts": ["An unanticipated drop in AD from a sharp decline in consumer confidence", "Lower transaction costs from the growth of the Internet", "An unanticipated fall in the world price of oil", "Steady, anticipated growth in the capital stock"], "exp": "Unanticipated AD reductions cause recessions. Lower transaction costs and cheaper oil boost supply (cheaper oil hurts oil-producing states, though)."}, {"id": 78, "ch": 10, "q": "Over the past several decades, how have U.S. expansions compared with recessions?", "opts": ["Expansions have been far lengthier than recessions", "Recessions have been longer than expansions", "They have been about equal in length", "There have been no recessions since 1950"], "exp": "E.g., the 2009-2020 expansion lasted 128 months, while most recessions lasted under a year and a half."}], "names": {"1": "The Economic Approach", "2": "Some Tools of the Economist", "5": "Difficult Cases for the Market & Role of Government", "6": "The Economics of Political Action", "7": "Taking the Nation's Economic Pulse (GDP)", "8": "Fluctuations, Unemployment & Inflation", "9": "Basic Macroeconomic Markets", "10": "Dynamic Change & the AD-AS Model"}};
+const QS = DATA.qs, NAMES = DATA.names;
+const KEY = "econQuizMissed_v1";
+const $ = id => document.getElementById(id);
+
+function loadMissed(){ try{ return new Set(JSON.parse(localStorage.getItem(KEY)||"[]")); }catch(e){ return new Set(); } }
+function saveMissed(s){ try{ localStorage.setItem(KEY, JSON.stringify([...s])); }catch(e){} }
+let missed = loadMissed();
+
+const chapters = [...new Set(QS.map(q=>q.ch))].sort((a,b)=>a-b);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function show(id){ ["home","quiz","results"].forEach(s=>$(s).classList.toggle("hidden", s!==id)); window.scrollTo(0,0); }
+
+/* home */
+$("chips").innerHTML = chapters.map(c=>{
+  const n = QS.filter(q=>q.ch===c).length;
+  return `<label class="chip" title="${NAMES[c]}"><input type="checkbox" value="${c}" checked><span>Ch. ${c} <small>(${n})</small></span></label>`;
+}).join("");
+function picked(){ return [...document.querySelectorAll("#chips input:checked")].map(i=>+i.value); }
+function refreshHome(){
+  const p = picked(); const n = QS.filter(q=>p.includes(q.ch)).length;
+  $("count").textContent = n ? `${n} questions selected.` : "Select at least one chapter to start.";
+  $("start").disabled = !n;
+  const w = missed.size;
+  $("weakText").textContent = w ? `${w} question${w===1?"":"s"} you've missed and haven't nailed yet. They're saved in this browser.` : "No weak spots yet. Questions you miss will show up here.";
+  $("startWeak").disabled = !w; $("clearWeak").disabled = !w;
+}
+$("chips").addEventListener("change", refreshHome);
+$("selAll").onclick = ()=>{ document.querySelectorAll("#chips input").forEach(i=>i.checked=true); refreshHome(); };
+$("selNone").onclick = ()=>{ document.querySelectorAll("#chips input").forEach(i=>i.checked=false); refreshHome(); };
+$("start").onclick = ()=> startRound(QS.filter(q=>picked().includes(q.ch)).map(q=>q.id));
+$("startWeak").onclick = ()=> startRound([...missed]);
+$("weakAfter").onclick = ()=> startRound([...missed]);
+$("clearWeak").onclick = ()=>{ if(confirm("Clear all saved weak spots?")){ missed = new Set(); saveMissed(missed); refreshHome(); } };
+$("again").onclick = ()=>{ refreshHome(); show("home"); };
+$("quit").onclick = finish;
+
+/* quiz state */
+let queue=[], firstSeen=new Set(), firstRight=0, perCh={}, answered=false, cur=null, curOpts=[], done=0, total=0;
+
+function startRound(ids){
+  ids = ids.filter(i=>QS[i]);
+  if(!ids.length) return;
+  queue = shuffle(ids.slice()); firstSeen = new Set(); firstRight = 0; perCh = {}; done = 0; total = queue.length;
+  show("quiz"); nextQ();
+}
+function nextQ(){
+  if(!queue.length){ finish(); return; }
+  cur = QS[queue.shift()]; answered = false;
+  curOpts = shuffle(cur.opts.map((t,i)=>({t, right:i===0})));
+  $("tag").innerHTML = `<b>Ch. ${cur.ch}</b> ${NAMES[cur.ch]}`;
+  $("meter").style.width = (100*done/Math.max(total,1))+"%";
+  $("qtext").textContent = cur.q;
+  const letters="ABCD";
+  $("opts").innerHTML = curOpts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${letters[i]}</span><span></span></button>`).join("");
+  [...$("opts").children].forEach((b,i)=>{ b.lastChild.textContent = curOpts[i].t; b.onclick = ()=>answer(i); });
+  $("fb").classList.add("hidden"); $("next").classList.add("hidden");
+  $("opts").firstChild.focus({preventScroll:true});
+}
+function answer(i){
+  if(answered) return; answered = true;
+  const ok = curOpts[i].right;
+  [...$("opts").children].forEach((b,j)=>{
+    b.disabled = true;
+    if(curOpts[j].right) b.classList.add("right");
+    else if(j===i) b.classList.add("wrong");
+    else b.classList.add("dim");
+  });
+  const first = !firstSeen.has(cur.id);
+  if(first){
+    firstSeen.add(cur.id);
+    const r = perCh[cur.ch] || [0,0]; perCh[cur.ch] = [r[0]+(ok?1:0), r[1]+1];
+    if(ok){ firstRight++; missed.delete(cur.id); }
+  }
+  if(ok){ done++; } else { missed.add(cur.id); queue.push(cur.id); }
+  saveMissed(missed);
+  const fb = $("fb");
+  fb.className = "feedback" + (ok ? "" : " no");
+  fb.innerHTML = `<strong>${ok ? "Correct." : "Not quite."}</strong><span></span>` + (ok ? "" : `<p class="retry-note">This one will come back later in the round.</p>`);
+  fb.querySelector("span").textContent = cur.exp;
+  $("meter").style.width = (100*done/Math.max(total,1))+"%";
+  $("next").textContent = queue.length ? "Next question" : "See results";
+  $("next").classList.remove("hidden"); $("next").focus({preventScroll:true});
+}
+$("next").onclick = nextQ;
+
+function finish(){
+  const n = firstSeen.size;
+  if(!n){ refreshHome(); show("home"); return; }
+  const pct = Math.round(100*firstRight/n);
+  $("score").textContent = pct + "%";
+  $("scoreNote").textContent = `${firstRight} of ${n} right on the first try. Chapters under 75% are marked in orange.`;
+  $("bars").innerHTML = Object.keys(perCh).map(Number).sort((a,b)=>a-b).map(c=>{
+    const [r,s] = perCh[c]; const p = Math.round(100*r/s);
+    return `<div class="bar ${p<75?"low":""}" title="${NAMES[c]}"><span>Ch. ${c}</span><div class="track"><div class="fill" style="width:${p}%"></div></div><span class="n">${r}/${s}</span></div>`;
+  }).join("");
+  $("weakAfter").disabled = !missed.size;
+  $("weakAfter").textContent = missed.size ? `Practice weak spots (${missed.size})` : "No weak spots";
+  show("results");
+}
+
+document.addEventListener("keydown", e=>{
+  if($("quiz").classList.contains("hidden")) return;
+  const k = e.key.toLowerCase();
+  const map = {"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3};
+  if(!answered && k in map && map[k] < curOpts.length){ e.preventDefault(); answer(map[k]); }
+  else if(answered && k==="enter" && document.activeElement !== $("next")){ e.preventDefault(); nextQ(); }
+});
+
+refreshHome();
+</script>
+</body>
+</html>
