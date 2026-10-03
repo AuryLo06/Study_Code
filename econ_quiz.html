@@ -145,8 +145,10 @@ button:focus-visible,.chip:focus-within{outline:3px solid var(--demand); outline
         <p class="hint" id="weakText"></p>
         <div class="row">
           <button class="btn" id="startWeak">Practice weak spots</button>
+          <button class="btn ghost" id="saveWeak">Save to notes</button>
           <button class="btn ghost" id="clearWeak">Clear weak spots</button>
         </div>
+        <p class="hint hidden" id="saveNote" role="status" aria-live="polite"></p>
       </div>
       <p class="hint">Keyboard: press 1–4 or A–D to answer, Enter for the next question. <a href="./" style="color:var(--demand)">How this quiz works</a></p>
     </div>
@@ -178,7 +180,9 @@ button:focus-visible,.chip:focus-within{outline:3px solid var(--demand); outline
     <div class="row">
       <button class="btn" id="again">Back to start</button>
       <button class="btn ghost" id="weakAfter">Practice weak spots</button>
+      <button class="btn ghost" id="saveWeakAfter">Save to notes</button>
     </div>
+    <p class="hint hidden" id="saveNoteAfter" role="status" aria-live="polite"></p>
   </section>
 </main>
 
@@ -208,7 +212,8 @@ function refreshHome(){
   $("start").disabled = !n;
   const w = missed.size;
   $("weakText").textContent = w ? `${w} question${w===1?"":"s"} you've missed and haven't nailed yet. They're saved in this browser.` : "No weak spots yet. Questions you miss will show up here.";
-  $("startWeak").disabled = !w; $("clearWeak").disabled = !w;
+  $("startWeak").disabled = !w; $("clearWeak").disabled = !w; $("saveWeak").disabled = !w;
+  $("saveNote").classList.add("hidden");
 }
 $("chips").addEventListener("change", refreshHome);
 $("selAll").onclick = ()=>{ document.querySelectorAll("#chips input").forEach(i=>i.checked=true); refreshHome(); };
@@ -218,6 +223,45 @@ $("startWeak").onclick = ()=> startRound([...missed]);
 $("weakAfter").onclick = ()=> startRound([...missed]);
 $("clearWeak").onclick = ()=>{ if(confirm("Clear all saved weak spots?")){ missed = new Set(); saveMissed(missed); refreshHome(); } };
 $("again").onclick = ()=>{ refreshHome(); show("home"); };
+
+/* save weak spots as a text file for a notes app */
+function weakNotes(){
+  const date = new Date().toLocaleDateString(undefined, {year:"numeric", month:"long", day:"numeric"});
+  const qs = [...missed].map(i=>QS[i]).filter(Boolean).sort((a,b)=>a.ch-b.ch || a.id-b.id);
+  let out = `Macro practice quiz: weak spots\nSaved ${date} · ${qs.length} question${qs.length===1?"":"s"}\n`;
+  let ch = null, n = 0;
+  for(const q of qs){
+    if(q.ch !== ch){ ch = q.ch; out += `\n=== Ch. ${ch}: ${NAMES[ch]} ===\n`; }
+    out += `\n${++n}. ${q.q}\n   Answer: ${q.opts[0]}\n   Why: ${q.exp}\n`;
+  }
+  return out;
+}
+async function saveWeak(noteId){
+  if(!missed.size) return;
+  const text = weakNotes();
+  const name = `macro-weak-spots-${new Date().toISOString().slice(0,10)}.txt`;
+  const note = $(noteId);
+  const say = msg => { note.textContent = msg; note.classList.remove("hidden"); };
+  const file = new File([text], name, {type:"text/plain"});
+  // On phones and tablets, open the share sheet so it can go straight into Notes.
+  if(matchMedia("(pointer: coarse)").matches && navigator.share){
+    try{
+      if(navigator.canShare && navigator.canShare({files:[file]})) await navigator.share({files:[file], title:"Macro weak spots"});
+      else await navigator.share({title:"Macro weak spots", text});
+      say("Shared. Pick your notes app from the share menu.");
+      return;
+    }catch(e){
+      if(e.name === "AbortError") return;
+    }
+  }
+  const url = URL.createObjectURL(file);
+  const a = Object.assign(document.createElement("a"), {href:url, download:name});
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+  say(`Downloaded ${name}. Open it or drag it into your notes app.`);
+}
+$("saveWeak").onclick = ()=> saveWeak("saveNote");
+$("saveWeakAfter").onclick = ()=> saveWeak("saveNoteAfter");
 $("quit").onclick = finish;
 
 /* quiz state */
@@ -281,6 +325,8 @@ function finish(){
   }).join("");
   $("weakAfter").disabled = !missed.size;
   $("weakAfter").textContent = missed.size ? `Practice weak spots (${missed.size})` : "No weak spots";
+  $("saveWeakAfter").disabled = !missed.size;
+  $("saveNoteAfter").classList.add("hidden");
   show("results");
 }
 
