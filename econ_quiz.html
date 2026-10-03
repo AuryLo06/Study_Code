@@ -109,6 +109,7 @@ button:focus-visible,.chip:focus-within{outline:3px solid var(--demand); outline
 .hidden{display:none !important}
 @media (prefers-reduced-motion: reduce){ .meter i{transition:none} }
 </style>
+<script data-goatcounter="https://aurylo06.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
 <main>
@@ -238,6 +239,7 @@ function weakNotes(){
 }
 async function saveWeak(noteId){
   if(!missed.size) return;
+  track("saved-to-notes", "Saved weak spots to notes");
   const text = weakNotes();
   const name = `macro-weak-spots-${new Date().toISOString().slice(0,10)}.txt`;
   const note = $(noteId);
@@ -271,6 +273,7 @@ function startRound(ids){
   ids = ids.filter(i=>QS[i]);
   if(!ids.length) return;
   queue = shuffle(ids.slice()); firstSeen = new Set(); firstRight = 0; perCh = {}; done = 0; total = queue.length;
+  track("round-started", "Round started");
   show("quiz"); nextQ();
 }
 function nextQ(){
@@ -316,6 +319,8 @@ $("next").onclick = nextQ;
 function finish(){
   const n = firstSeen.size;
   if(!n){ refreshHome(); show("home"); return; }
+  if(queue.length) track("round-ended-early", "Round ended early");
+  else track("round-finished", "Round finished");
   const pct = Math.round(100*firstRight/n);
   $("score").textContent = pct + "%";
   $("scoreNote").textContent = `${firstRight} of ${n} right on the first try. Chapters under 75% are marked in orange.`;
@@ -337,6 +342,27 @@ document.addEventListener("keydown", e=>{
   if(!answered && k in map && map[k] < curOpts.length){ e.preventDefault(); answer(map[k]); }
   else if(answered && k==="enter" && document.activeElement !== $("next")){ e.preventDefault(); nextQ(); }
 });
+
+/* anonymous usage stats (GoatCounter): no names, no answers, no scores */
+function track(path, title){
+  try{ if(window.goatcounter && goatcounter.count) goatcounter.count({path, title, event:true}); }catch(e){}
+}
+// Time spent: count only while the quiz tab is on screen, and report one bucket
+// the first time the visitor leaves (switches tabs, locks the phone, closes it).
+let activeMs = 0, shownAt = document.visibilityState === "visible" ? Date.now() : null, timeSent = false;
+function sendTime(){
+  if(shownAt !== null){ activeMs += Date.now() - shownAt; shownAt = null; }
+  if(timeSent) return;
+  timeSent = true;
+  const min = activeMs / 60000;
+  const bucket = min < 2 ? "0-2" : min < 5 ? "2-5" : min < 10 ? "5-10" : min < 20 ? "10-20" : "20-plus";
+  track(`time-in-quiz/${bucket}-min`, `Time in quiz: ${bucket.replace("-plus","+")} min`);
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(document.visibilityState === "hidden") sendTime();
+  else if(shownAt === null) shownAt = Date.now();
+});
+addEventListener("pagehide", sendTime);
 
 refreshHome();
 </script>

@@ -36,7 +36,7 @@ On Windows, use `py econ_quiz.py`.
 
 ## Privacy
 
-The web version saves weak spots in your browser's local storage, on your own device only. Nothing is sent to a server, and nobody else can see your answers. The Python version saves them to `~/.econ_quiz_missed.json`.
+The web version saves weak spots in your browser's local storage, on your own device only. Your answers and scores never leave your device. The site counts anonymous usage (visits, time spent in the quiz, rounds started and finished) with [GoatCounter](https://www.goatcounter.com/), which uses no cookies and records no names, answers or scores. The Python version saves weak spots to `~/.econ_quiz_missed.json`.
 
 ## Feedback
 
