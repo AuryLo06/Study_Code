@@ -1,6 +1,6 @@
 # Study_Code
 
-A macroeconomics practice quiz covering Gwartney, *Macroeconomics* 18th edition, chapters 1, 2 and 5–10. It has 79 multiple-choice questions, and every one comes with an explanation. I built it with Claude (vibe-coding) to study for my macro class and shared it with my classmates.
+A macroeconomics practice quiz covering Gwartney, *Macroeconomics* 18th edition, chapters 1, 2 and 5–10. It has 200 multiple-choice questions (25 per chapter, written from the chapter slides), and every one comes with an explanation. I built it with Claude (vibe-coding) to study for my macro class and shared it with my classmates.
 
 **Try it:** https://aurylo06.github.io/Study_Code/
 
