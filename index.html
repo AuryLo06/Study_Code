@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Macro Practice Quiz Guide</title>
+<meta name="description" content="How to use the Macro Practice Quiz: 79 questions from Gwartney Macroeconomics 18e, chapters 1, 2 and 5–10.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F8FB; --grid:#E1E8F1; --ink:#1B2B4B; --muted:#5A6A86;
+  --demand:#2F6FDB; --supply:#D9661A; --good:#23845A; --bad:#C2363F;
+  --card:#FFFFFF; --line:#C9D4E3;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#111827; --grid:#1C2536; --ink:#E6ECF5; --muted:#9AA8BF;
+    --demand:#6EA0F5; --supply:#F0934D; --good:#4CC38A; --bad:#F07178;
+    --card:#18213A; --line:#2D3A55;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#111827; --grid:#1C2536; --ink:#E6ECF5; --muted:#9AA8BF;
+  --demand:#6EA0F5; --supply:#F0934D; --good:#4CC38A; --bad:#F07178;
+  --card:#18213A; --line:#2D3A55;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0; color:var(--ink); background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size:1.0625rem; line-height:1.55; min-height:100vh;
+}
+main{max-width:40rem; margin:0 auto; padding:1.5rem 1rem 4rem}
+h1,h2{font-family:"Bricolage Grotesque", "Atkinson Hyperlegible", system-ui, sans-serif; font-weight:700; letter-spacing:-0.01em; margin:0}
+h1{font-size:clamp(1.9rem,6vw,2.6rem); line-height:1.05}
+h2{font-size:1.35rem; line-height:1.2; margin-bottom:.75rem}
+p{margin:0}
+p+p,p+ul,p+ol,ul+p,ol+p,table+p,p+table,p+.cta{margin-top:.75rem}
+ul,ol{margin:0; padding-left:1.25rem}
+li+li{margin-top:.4rem}
+a{color:var(--demand)}
+a:focus-visible{outline:3px solid var(--demand); outline-offset:2px}
+.muted{color:var(--muted)}
+kbd{font:700 .85em "Atkinson Hyperlegible",sans-serif; border:1.5px solid var(--line); border-bottom-width:3px; border-radius:6px; padding:0 .35em; background:var(--paper)}
+
+.hero{display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:end; margin-bottom:1.25rem}
+.hero p{color:var(--muted); margin-top:.5rem}
+.graph{width:110px; height:100px}
+.graph .axis{stroke:var(--ink); stroke-width:2; fill:none}
+.graph .d{stroke:var(--demand); stroke-width:3; fill:none; stroke-linecap:round}
+.graph .s{stroke:var(--supply); stroke-width:3; fill:none; stroke-linecap:round}
+.graph .eq{fill:var(--ink)}
+.graph text{font:700 11px "Atkinson Hyperlegible",sans-serif; fill:var(--muted)}
+@media (max-width:420px){ .graph{display:none} .hero{grid-template-columns:1fr} }
+
+.panel{background:var(--card); border:1.5px solid var(--line); border-radius:14px; padding:1.25rem}
+.stack>*+*{margin-top:1rem}
+.btn{display:inline-block; text-decoration:none; border:2px solid var(--ink); background:var(--ink); color:var(--paper); border-radius:10px; padding:.8rem 1.25rem; font-weight:700; font-size:1.05rem}
+.btn:hover{background:var(--demand); border-color:var(--demand); color:#fff}
+.cta{display:flex; flex-wrap:wrap; gap:.75rem; align-items:center}
+.start{border-color:var(--demand); border-width:2px}
+
+.facts{display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; text-align:center}
+.facts div{border:1.5px solid var(--line); border-radius:10px; padding:.6rem .4rem; background:var(--paper)}
+.facts b{display:block; font-family:"Bricolage Grotesque",sans-serif; font-size:1.5rem; line-height:1.1}
+.facts span{font-size:.85rem; color:var(--muted)}
+
+nav ol{columns:2; column-gap:1.5rem; font-size:.95rem}
+@media (max-width:420px){ nav ol{columns:1} }
+
+table{width:100%; border-collapse:collapse; font-size:.95rem}
+th,td{text-align:left; padding:.45rem .5rem; border-bottom:1px solid var(--line); vertical-align:top}
+th{font-size:.85rem; color:var(--muted); font-weight:700}
+td.n,th.n{text-align:right; white-space:nowrap}
+dt{font-weight:700}
+dd{margin:.15rem 0 0}
+dd+dt{margin-top:.8rem}
+footer{margin-top:2rem; text-align:center}
+</style>
+</head>
+<body>
+<main class="stack">
+
+  <header>
+    <div class="hero">
+      <div>
+        <h1>Macro practice quiz</h1>
+        <p>Gwartney, <i>Macroeconomics</i> 18e, chapters 1, 2 and 5–10. Read this two-minute guide, then start.</p>
+      </div>
+      <svg class="graph" viewBox="0 0 120 110" aria-hidden="true">
+        <path class="axis" d="M12 4 V98 H116"/>
+        <path class="d" d="M20 16 L104 90"/>
+        <path class="s" d="M20 90 L104 16"/>
+        <circle class="eq" cx="62" cy="53" r="5"/>
+        <text x="106" y="96">Q</text><text x="2" y="12">P</text>
+      </svg>
+    </div>
+    <div class="cta">
+      <a class="btn start" href="econ_quiz.html">Start the quiz →</a>
+      <span class="muted">No sign-up. Works on phones too.</span>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="facts">
+      <div><b>79</b><span>questions</span></div>
+      <div><b>8</b><span>chapters</span></div>
+      <div><b>0</b><span>accounts needed</span></div>
+    </div>
+    <p style="margin-top:1rem">Every question has a short explanation. Questions you miss keep coming back until you get them right, and the quiz remembers your weak spots between visits.</p>
+  </section>
+
+  <nav class="panel" aria-label="Guide contents">
+    <h2>In this guide</h2>
+    <ol>
+      <li><a href="#start">Getting started</a></li>
+      <li><a href="#home">The home screen</a></li>
+      <li><a href="#round">Taking a round</a></li>
+      <li><a href="#results">The results screen</a></li>
+      <li><a href="#weak">Weak spots</a></li>
+      <li><a href="#progress">Your saved progress</a></li>
+      <li><a href="#faq">Study tips and FAQ</a></li>
+    </ol>
+  </nav>
+
+  <section class="panel" id="start">
+    <h2>Getting started</h2>
+    <p>Open the quiz with the <a href="econ_quiz.html">Start the quiz</a> button. There is nothing to install and no account to make.</p>
+    <p>It works in any up-to-date browser (Chrome, Safari, Edge, Firefox) on a laptop, tablet or phone. Use a normal window, not private or incognito, if you want your progress remembered (see <a href="#progress">Your saved progress</a>).</p>
+  </section>
+
+  <section class="panel" id="home">
+    <h2>The home screen</h2>
+    <p>The home screen is where you choose what to study. It has two panels: <b>Pick chapters</b> and <b>Weak spots</b>.</p>
+    <p><b>Pick chapters</b> shows one button per chapter, with its question count in parentheses. All chapters start selected. Tap a chapter to include or exclude it, or use <b>Select all</b> and <b>Clear</b>.</p>
+    <table>
+      <thead><tr><th>Ch.</th><th>Topic</th><th class="n">Questions</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>The Economic Approach</td><td class="n">6</td></tr>
+        <tr><td>2</td><td>Some Tools of the Economist</td><td class="n">7</td></tr>
+        <tr><td>5</td><td>Difficult Cases for the Market &amp; Role of Government</td><td class="n">8</td></tr>
+        <tr><td>6</td><td>The Economics of Political Action</td><td class="n">9</td></tr>
+        <tr><td>7</td><td>Taking the Nation's Economic Pulse (GDP)</td><td class="n">7</td></tr>
+        <tr><td>8</td><td>Fluctuations, Unemployment &amp; Inflation</td><td class="n">13</td></tr>
+        <tr><td>9</td><td>Basic Macroeconomic Markets</td><td class="n">12</td></tr>
+        <tr><td>10</td><td>Dynamic Change &amp; the AD-AS Model</td><td class="n">17</td></tr>
+      </tbody>
+    </table>
+    <p>The line under the chapters tells you how many questions you've selected. Press <b>Start quiz</b> to begin a round with all of them, in random order. The button is greyed out until at least one chapter is selected.</p>
+  </section>
+
+  <section class="panel" id="round">
+    <h2>Taking a round</h2>
+    <p>A round ends only when you've answered every question in it correctly. Each question has four choices, A to D.</p>
+    <ol>
+      <li>Read the question. The tag at the top shows its chapter, and the bar shows how much of the round you've completed.</li>
+      <li>Pick an answer: click or tap it, or press <kbd>1</kbd>–<kbd>4</kbd> or <kbd>A</kbd>–<kbd>D</kbd>.</li>
+      <li>Read the feedback. The correct answer turns green, a wrong pick is marked, and a short explanation says why.</li>
+      <li>Press <b>Next question</b> or <kbd>Enter</kbd>. After the last question the button says <b>See results</b>.</li>
+    </ol>
+    <p><b>Missed questions come back.</b> A wrong answer goes to the end of the line and keeps returning until you get it right. The progress bar only moves on correct answers.</p>
+    <p><b>Answers are shuffled every time.</b> Question order and A–D positions change each round, so memorizing "it was C" won't help.</p>
+    <p><b>Need to stop early?</b> Press <b>End quiz</b> at the top right to see results for the questions you've seen so far.</p>
+  </section>
+
+  <section class="panel" id="results">
+    <h2>The results screen</h2>
+    <p>Your score is the percentage you got right on the <b>first try</b>. Retries after a miss don't count, so the score reflects what you actually knew.</p>
+    <p>Below it is a bar for each chapter in the round (for example, 9/12). Chapters under 75% are highlighted in orange. Those are the ones to reread.</p>
+    <ul>
+      <li><b>Back to start</b> returns to the home screen.</li>
+      <li><b>Practice weak spots</b> starts a round with only the questions you've missed.</li>
+    </ul>
+    <p>The score is shown once and isn't saved, so jot it down if you want to track it.</p>
+  </section>
+
+  <section class="panel" id="weak">
+    <h2>Weak spots</h2>
+    <p>Weak spots is your personal list of missed questions, and it carries over between visits. The home screen shows how many are on it.</p>
+    <ul>
+      <li><b>How a question gets on the list:</b> answer it wrong, in any round.</li>
+      <li><b>How it comes off:</b> answer it right on the first try in a later round. Getting it right on a retry in the same round doesn't remove it, because you'd just seen the answer.</li>
+      <li><b>Practice weak spots</b> starts a round with only those questions, from every chapter.</li>
+      <li><b>Clear weak spots</b> empties the list after asking you to confirm. This can't be undone.</li>
+    </ul>
+    <p>A good routine: do a full round, then run <b>Practice weak spots</b> a day or two later until the list is empty.</p>
+  </section>
+
+  <section class="panel" id="progress">
+    <h2>Your saved progress</h2>
+    <p>Your weak spots are saved only in your own browser, on your own device. Nothing is sent to a server, and no one else, including Aury, who made the quiz, can see your answers or scores.</p>
+    <ul>
+      <li><b>Separate for everyone.</b> Each person starts with an empty list.</li>
+      <li><b>Tied to one browser on one device.</b> Progress on your laptop won't show up on your phone, or in a different browser on the same laptop.</li>
+      <li><b>Private/incognito windows forget</b> the list when they close.</li>
+      <li><b>Clearing your browser data</b> (cookies and site data) wipes the list.</li>
+      <li><b>Shared computers share a list.</b> Press <b>Clear weak spots</b> before you start on a shared computer.</li>
+    </ul>
+  </section>
+
+  <section class="panel" id="faq">
+    <h2>Study tips and FAQ</h2>
+    <ul>
+      <li>Read the explanation even when you're right. It often covers the reasoning the exam asks about.</li>
+      <li>Study one or two chapters at a time while learning them, then select all for review before an exam.</li>
+      <li>Chapter 10 (AD-AS) has the most questions, 17. Give it its own round.</li>
+    </ul>
+    <dl style="margin-top:1rem">
+      <dt>"Start quiz" is greyed out.</dt>
+      <dd>No chapters are selected. Tap at least one, or press <b>Select all</b>.</dd>
+      <dt>"Practice weak spots" is greyed out.</dt>
+      <dd>Your list is empty: you haven't missed anything yet, or the list was cleared.</dd>
+      <dt>My weak spots disappeared.</dt>
+      <dd>You're probably on a different device or browser, in a private window, or your browser data was cleared.</dd>
+      <dt>Can I go back to a question?</dt>
+      <dd>Not within a round. Missed questions come back on their own, and you can start a new round any time.</dd>
+      <dt>I think an answer is wrong.</dt>
+      <dd>Email Aury Lomas at <a href="mailto:alomas5@lsu.edu">alomas5@lsu.edu</a> with the question text and chapter.</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <a class="btn start" href="econ_quiz.html">Start the quiz →</a>
+  </footer>
+</main>
+</body>
+</html>
