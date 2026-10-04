@@ -6,13 +6,16 @@ A macroeconomics practice quiz covering Gwartney, *Macroeconomics* 18th edition,
 
 ## Features
 
+- Exam-style mix in every chapter: 10 core-concept questions and 15 harder ones (scenarios, multi-step calculations, "spot the mistake", two-statement questions)
+- Graphs (PPC, MB/MC, externalities, AD-AS shifts, loanable funds) and tables drawn right in the question, plus graphs in explanations that show the curve shift
+- Explanations cover why the right answer is right and why the most tempting wrong answer is wrong
 - Pick which chapters to practice
 - Answer choices are shuffled every time, so you learn the idea, not the letter
 - Questions you miss come back later in the round until you get them right
 - Your score counts first-try answers only, with a breakdown by chapter (under 75% is flagged)
 - Missed questions are saved as "weak spots" so you can practice just those later
 - **Save to notes** exports your weak spots as a study sheet (question, answer, explanation), using the share menu on phones or a text file download on computers
-- Keyboard shortcuts: 1–4 or A–D to answer, Enter for the next question
+- Keyboard shortcuts: 1–4 to answer, Enter for the next question. Highlighting and copying text never picks an answer
 
 ## Files
 
