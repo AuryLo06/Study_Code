@@ -2220,11 +2220,10 @@ QUESTIONS = [
      'q': 'Students who use the campus tutoring center have lower average grades than students who '
           'don\'t. A dean proposes closing the center because tutoring "hurts grades." What is the '
           'best critique?',
-     'opts': ['Struggling students are more likely to seek tutoring, so cause may run the other way',
-              'The dean commits the fallacy of composition by moving from one student to everyone',
-              "The dean's statement is normative, so grade data cannot be used to evaluate it",
-              'The dean ignores that grades have subjective value that differs from student to '
-              'student'],
+     'opts': ['Struggling students are more likely to seek tutoring',
+              "The dean assumes what's true for one student is true for all students",
+              "The dean's claim is normative, so grade data can't test it",
+              'Grades have subjective value that differs for each student'],
      'exp': 'Statistical association alone cannot establish causation. Low grades likely lead students '
             'to tutoring, not the reverse. The composition option is tempting, but the dean is '
             'reasoning from group data, not from one student to the group.'},
